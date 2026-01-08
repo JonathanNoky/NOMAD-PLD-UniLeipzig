@@ -1,0 +1,29 @@
+{
+  "template": "https://github.com/FAIRmat-NFDI/cookiecutter-nomad-plugin",
+  "commit": "7bfd556fe5c57f6ad5666fe65eed2cf3672f5719",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "full_name": "Jonathan Noky",
+      "email": "jonathan.noky@cpfs.mpg.de",
+      "github_username": "JonathanNoky",
+      "plugin_name": "NOMAD-PLD-UniLeipzig",
+      "module_name": "nomad_pld_unileipzig",
+      "short_description": "Adaption of the PLD process from nomad-material-processing to the needs of Uni Leipzig",
+      "version": "0.1.0",
+      "license": "MIT",
+      "include_schema_package": true,
+      "include_normalizer": true,
+      "include_parser": true,
+      "include_app": true,
+      "include_example_uploads": true,
+      "include_action": false,
+      "_copy_without_render": [
+        "*.html"
+      ],
+      "_template": "https://github.com/FAIRmat-NFDI/cookiecutter-nomad-plugin",
+      "_commit": "7bfd556fe5c57f6ad5666fe65eed2cf3672f5719"
+    }
+  },
+  "directory": null
+}
