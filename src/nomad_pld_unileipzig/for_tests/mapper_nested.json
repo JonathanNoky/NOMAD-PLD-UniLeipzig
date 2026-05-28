@@ -1,0 +1,90 @@
+{
+    "$json_mapper_class_key": "pld_leipzig",
+    "main_schema": {
+        "is_main": "True",
+        "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigPulsedLaserDeposition",
+        "rules": {
+            "graph[1].name": "name"
+        }
+    },
+    "step1": {
+        "main_key": "steps",
+        "repeats": "True",
+        "repeat_paths": ["*.value.extra_fields"],
+        "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDStep",
+        "rules": {
+            "stepName.value": "name",
+            "stepTime.value": "duration",
+            "stepComment.value": "comment"
+        },
+        "subsections": {  
+            "Sources": {
+                "main_key": "sources",
+                "repeats": "True",
+                "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDSource",
+                "rules": {
+                    "name": "name"
+                },
+                "subsections": {
+                    "laser": {
+                        "main_key": "vapor_source",
+                        "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDLaser",
+                        "rules": {
+                            "laserPulseFrequency.value": "repetition_rate",
+                            "laserSpotSize.value": "spot_size",
+                            "laserPulseCount.value": "pulses"
+                        }
+                    }
+                }
+            },
+            "parameters": {
+                "main_key": "sample_parameters",
+                "repeats": "True",
+                "schema": "nomad_material_processing.vapor_deposition.pvd.general.PVDSampleParameters",
+                "rules": {
+                    "substrateTargetDistance.value": "distance_to_source"
+                }
+            },
+            "environment": {
+                "main_key": "environment",
+                "schema": "nomad_material_processing.vapor_deposition.general.ChamberEnvironment",
+                "rules": {
+                    "name": "name"
+                },
+                "subsections": {
+                    "gas_flow": {
+                        "main_key": "gas_flow",
+                        "repeats": "True",
+                        "schema": "nomad_material_processing.vapor_deposition.general.GasFlow",
+                        "rules": {
+                            "name": "name"
+                        },
+                        "subsections": {
+                            "Gas": {
+                                "main_key": "gas",
+                                "schema": "nomad.datamodel.metainfo.basesections.v1.PureSubstanceSection",
+                                "rules": {
+                                    "gas.value": "name"
+                                }
+                            },
+                            "flowrate": {
+                                "main_key": "flow_rate",
+                                "schema": "nomad_material_processing.vapor_deposition.general.VolumetricFlowRate",
+                                "rules": {
+                                    "gasFlow.value": "value"
+                                }
+                            }
+                        }
+                    },
+                    "pressure": {
+                        "main_key": "pressure",
+                        "schema":"nomad_material_processing.vapor_deposition.general.Pressure",
+                        "rules": {
+                            "pressureSetPoint.value": "value"
+                        }
+                    }
+                }
+            }
+        }   
+    }
+} 

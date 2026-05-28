@@ -1,17 +1,14 @@
 from nomad.config.models.plugins import SchemaPackageEntryPoint
-from pydantic import Field
 
 
-class NewSchemaPackageEntryPoint(SchemaPackageEntryPoint):
-    parameter: int = Field(0, description='Custom configuration parameter')
-
+class UniLeipzigPLDSchema(SchemaPackageEntryPoint):
     def load(self):
-        from nomad_pld_unileipzig.schema_packages.schema_package import m_package
+        from nomad_pld_unileipzig.schema_packages.pld import m_package
 
         return m_package
 
 
-schema_package_entry_point = NewSchemaPackageEntryPoint(
-    name='NewSchemaPackage',
+uni_leipzig_pld_schema = UniLeipzigPLDSchema(
+    name='UniLeipzigPhysicalLaserDepositionSchema',
     description='New schema package entry point configuration.',
 )

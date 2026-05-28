@@ -1,0 +1,285 @@
+{
+    "$json_mapper_class_key": "pld_leipzig",    
+    "main_schema": {
+        "is_main": "True",
+        "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigPulsedLaserDeposition",
+        "rules": {
+            "graph[0].hasPart[1].name": "name",
+            "pdf_file": {
+                "source": "graph[0].hasPart[1].*.\"@id\"",
+                "target": "pdf_file",
+                "match_key": [{"name": ".*pdf"}]
+            },
+            "jpg_file": {
+                "source": "graph[0].hasPart[1].*.\"@id\"",
+                "target": "jpg_file",
+                "match_key": [{"name": ".*jpg"}]
+            },
+            "protocol_file": {
+                "source": "graph[0].hasPart[1].*.\"@id\"",
+                "target": "protocol_file",
+                "match_key": [{"name": ".*ptk"}]
+            },
+            "abs_file": {
+                "source": "graph[0].hasPart[1].*.\"@id\"",
+                "target": "abs_file",
+                "match_key": [{"name": ".*abs"}]
+            }
+        }
+    },
+    "sample_ref": {
+        "main_key": "samples",
+        "schema": "nomad.datamodel.metainfo.basesections.v1.CompositeSystemReference",
+        "repeats": "True",
+        "rules": {
+            "graph[0].hasPart[0].name": "name",
+            "graph[0].hasPart[0].identifier": "lab_id"
+        },
+        "subsections": {
+            "sample": {
+                "main_key": "reference",
+                "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigPLDSample",
+                "is_archive": "True",
+                "rules": {
+                    "graph[0].hasPart[0].name": "name",
+                    "graph[0].hasPart[0].identifier": "elabftw_identifier"
+                }
+            }
+        }
+    },
+    "step": {
+        "main_key": "steps",
+        "repeats": "True",
+        "repeat_paths": ["graph[0].hasPart[1].*"],
+        "repeat_keys": [{"about.\"@id\"": "#category-PLD Step"}],
+        "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigPLDStep",
+        "rules": {
+            "name": "name",
+            "variableMeasured[0].value.extra_fields.stepTime.value": "duration",
+            "variableMeasured[0].value.extra_fields.stepComment.value": "comment",
+            "variableMeasured[0].value.extra_fields.stepNumber.value": "stepnumber"
+        },
+        "subsections": {  
+            "Sources": {
+                "main_key": "sources",
+                "repeats": "True",
+                "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDSource",
+                "rules": {
+                    "name": "name"
+                },
+                "subsections": {
+                    "laser": {
+                        "main_key": "vapor_source",
+                        "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDLaser",
+                        "rules": {
+                            "variableMeasured[0].value.extra_fields.laserPulseFrequency.value": "repetition_rate",
+                            "variableMeasured[0].value.extra_fields.laserPulseCount.value": "pulses"
+                        },
+                        "subsections": {
+                            "power": {
+                                "main_key": "power",
+                                "schema": "nomad_material_processing.vapor_deposition.pvd.general.SourcePower",
+                                "rules": {
+                                    "set_value_rule":{
+                                        "source": "variableMeasured[0].value.extra_fields.heaterPower.value",
+                                        "target": "set_value",
+                                        "target_type": "array"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": {
+                "main_key": "sample_parameters",
+                "repeats": "True",
+                "schema": "nomad_material_processing.vapor_deposition.pvd.general.PVDSampleParameters",
+                "rules": {
+                    "variableMeasured[0].value.extra_fields.substrateTargetDistance.value": "distance_to_source"
+                },
+                "subsections": {
+                    "substrate_temperature": {
+                        "main_key": "substrate_temperature",
+                        "schema": "nomad_material_processing.vapor_deposition.general.Temperature",
+                        "rules": {
+                            "set_value_rule": {
+                                "source": "variableMeasured[0].value.extra_fields.substrateTemperatureSetPoint.value",
+                                "target": "set_value",
+                                "target_type": "array"
+                            },
+                            "variableMeasured[0].value.extra_fields.substrateTemperatureSetPoint.unit": "tempunits.set_value"
+                        }
+                    }
+                }
+            },
+            "environment": {
+                "main_key": "environment",
+                "schema": "nomad_material_processing.vapor_deposition.general.ChamberEnvironment",
+                "rules": {
+                    "name": "name"
+                },
+                "subsections": {
+                    "gas_flow": {
+                        "main_key": "gas_flow",
+                        "repeats": "True",
+                        "schema": "nomad_material_processing.vapor_deposition.general.GasFlow",
+                        "rules": {
+                            "name": "name"
+                        },
+                        "subsections": {
+                            "Gas": {
+                                "main_key": "gas",
+                                "schema": "nomad.datamodel.metainfo.basesections.v1.PureSubstanceSection",
+                                "rules": {
+                                    "variableMeasured[0].value.extra_fields.gas.value": "name"
+                                }
+                            }
+                        }
+                    },
+                    "pressure": {
+                        "main_key": "pressure",
+                        "schema":"nomad_material_processing.vapor_deposition.general.Pressure",
+                        "rules": {
+                            "set_value_rule": {
+                                "source": "variableMeasured[0].value.extra_fields.pressureSetPoint.value",
+                                "target": "set_value",
+                                "target_type": "array"
+                            },
+                            "variableMeasured[0].value.extra_fields.pressureSetPoint.unit": "tempunits.set_value"
+                        }
+                    }
+                }
+            }
+        }   
+    },
+    "layers": {
+        "main_key": "layer",
+        "repeats": "True",
+        "repeat_paths": ["graph[0].hasPart[1].*"],
+        "repeat_keys": [{"about.\"@id\"": "#category-PLD Layer"}],
+        "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigPLDStep",
+        "rules": {
+            "name": "name",
+            "variableMeasured[0].value.extra_fields.stepTime.value": "duration",
+            "variableMeasured[0].value.extra_fields.stepComment.value": "comment",
+            "variableMeasured[0].value.extra_fields.stepNumber.value": "stepnumber"
+        },
+        "subsections": {  
+            "Sources": {
+                "main_key": "sources",
+                "repeats": "True",
+                "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDSource",
+                "rules": {
+                    "name": "name"
+                },
+                "subsections": {
+                    "laser": {
+                        "main_key": "vapor_source",
+                        "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDLaser",
+                        "rules": {
+                            "variableMeasured[0].value.extra_fields.laserPulseFrequency.value": "repetition_rate",
+                            "variableMeasured[0].value.extra_fields.laserPulseCount.value": "pulses"
+                        },
+                        "subsections": {
+                            "power": {
+                                "main_key": "power",
+                                "schema": "nomad_material_processing.vapor_deposition.pvd.general.SourcePower",
+                                "rules": {
+                                    "set_value_rule":{
+                                        "source": "variableMeasured[0].value.extra_fields.heaterPower.value",
+                                        "target": "set_value",
+                                        "target_type": "array"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "material": {
+                        "main_key": "material",
+                        "repeats": "True",
+                        "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDTargetComponent",
+                        "rules": {
+                            "mentions[0].name": "name"
+                        }
+                    }
+                }
+            },
+            "parameters": {
+                "main_key": "sample_parameters",
+                "repeats": "True",
+                "schema": "nomad_material_processing.vapor_deposition.pvd.general.PVDSampleParameters",
+                "rules": {
+                    "variableMeasured[0].value.extra_fields.substrateTargetDistance.value": "distance_to_source"
+                },
+                "subsections": {
+                    "substrate_temperature": {
+                        "main_key": "substrate_temperature",
+                        "schema": "nomad_material_processing.vapor_deposition.general.Temperature",
+                        "rules": {
+                            "set_value_rule": {
+                                "source": "variableMeasured[0].value.extra_fields.substrateTemperatureSetPoint.value",
+                                "target": "set_value",
+                                "target_type": "array"
+                            },
+                            "variableMeasured[0].value.extra_fields.substrateTemperatureSetPoint.unit": "tempunits.set_value"
+                        }
+                    }
+                }
+            },
+            "environment": {
+                "main_key": "environment",
+                "schema": "nomad_material_processing.vapor_deposition.general.ChamberEnvironment",
+                "rules": {
+                    "name": "name"
+                },
+                "subsections": {
+                    "gas_flow": {
+                        "main_key": "gas_flow",
+                        "repeats": "True",
+                        "schema": "nomad_material_processing.vapor_deposition.general.GasFlow",
+                        "rules": {
+                            "name": "name"
+                        },
+                        "subsections": {
+                            "Gas": {
+                                "main_key": "gas",
+                                "schema": "nomad.datamodel.metainfo.basesections.v1.PureSubstanceSection",
+                                "rules": {
+                                    "variableMeasured[0].value.extra_fields.gas.value": "name"
+                                }
+                            }
+                        }
+                    },
+                    "pressure": {
+                        "main_key": "pressure",
+                        "schema":"nomad_material_processing.vapor_deposition.general.Pressure",
+                        "rules": {
+                            "set_value_rule": {
+                                "source": "variableMeasured[0].value.extra_fields.pressureSetPoint.value",
+                                "target": "set_value",
+                                "target_type": "array"
+                            },
+                            "variableMeasured[0].value.extra_fields.pressureSetPoint.unit": "tempunits.set_value"
+                        }
+                    }
+                }
+            }
+        }   
+    },
+    "chamber": {
+        "main_key": "chamber",
+        "is_archive": "True",
+        "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigChamber",
+        "rules": {
+            "graph[0].hasPart[2].name": "name",
+            "graph[0].hasPart[2].identifier": "elabftw_identifier",
+            "graph[0].hasPart[2].variableMeasured[0].value.extra_fields.laser.value": "laser",
+            "graph[0].hasPart[2].variableMeasured[0].value.extra_fields.heaterDevice.value": "heaterDevice",
+            "graph[0].hasPart[2].variableMeasured[0].value.extra_fields.vacuumController.value": "vacuumController",
+            "graph[0].hasPart[2].variableMeasured[0].value.extra_fields.laserSpotCalibrationFunction.value": "laserSpotCalibrationFunction",
+            "graph[0].hasPart[2].hasPart[0].\"@id\"": "chamber_images"
+        }
+
+    }
+} 
