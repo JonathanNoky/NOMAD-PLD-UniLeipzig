@@ -1,0 +1,240 @@
+{
+    "$json_mapper_class_key": "pld_leipzig_jsonld",    
+    "main_schema": {
+        "is_main": "True",
+        "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigPulsedLaserDeposition",
+        "rules": {
+            "name":{
+                "source": "*.name",
+                "target": "name",
+                "match_key": [{"about.name": "PLD Process"}]
+            },
+            "pdf_file": {
+                "source": "*.*.\"@id\"",
+                "target": "pdf_file",
+                "match_key": [{"about.name": "PLD Process"}],
+                "match_key1": [{"name": ".*pdf"}]
+            },
+            "jpg_file": {
+                "source": "*.*.\"@id\"",
+                "target": "jpg_file",
+                "match_key": [{"about.name": "PLD Process"}],
+                "match_key1": [{"name": ".*jpg"}]
+            },
+            "protocol_file": {
+                "source": "*.*.\"@id\"",
+                "target": "protocol_file",
+                "match_key": [{"about.name": "PLD Process"}],
+                "match_key1": [{"name": ".*ptk"}]
+            },
+            "abs_file": {
+                "source": "*.*.\"@id\"",
+                "target": "abs_file",
+                "match_key": [{"about.name": "PLD Process"}],
+                "match_key1": [{"name": ".*abs"}]
+            }
+        }
+    },
+    "sample_ref": {
+        "main_key": "samples",
+        "schema": "nomad.datamodel.metainfo.basesections.v1.CompositeSystemReference",
+        "repeats": "True",
+        "rules": {
+            "name":{
+                "source": "*.name",
+                "target": "name",
+                "match_key": [{"about.name": "Sample"}]
+            },
+            "name2":{
+                "source": "*.identifier",
+                "target": "lab_id",
+                "match_key": [{"about.name": "Sample"}]
+            }
+        },
+        "subsections": {
+            "sample": {
+                "main_key": "reference",
+                "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigPLDSample",
+                "is_archive": "True",
+                "rules": {
+                    "name":{
+                        "source": "*.name",
+                        "target": "name",
+                        "match_key": [{"about.name": "Sample"}]
+                    },
+                    "name2":{
+                        "source": "*.identifier",
+                        "target": "elabftw_identifier",
+                        "match_key": [{"about.name": "Sample"}]
+                    }
+                }
+            }
+        }
+    },
+    "step": {
+        "main_key": "steps",
+        "repeats": "True",
+        "repeat_paths": ["*"],
+        "repeat_keys": [{"about.name": "PLD Step"}],
+        "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigPLDStep",
+        "rules": {
+            "name": "name",
+            "stepTime": {
+                "source": "*.value",
+                "target": "duration",
+                "target_type": "float",
+                "match_key": [{"propertyID": "stepTime"}]
+            },
+            "stepComment": {
+                "source": "*.value",
+                "target": "comment",
+                "match_key": [{"propertyID": "stepComment"}]
+            },
+            "stepNumber": {
+                "source": "*.value",
+                "target": "stepnumber",
+                "match_key": [{"propertyID": "stepNumber"}]
+            }
+        },
+        "subsections": {  
+            "Sources": {
+                "main_key": "sources",
+                "repeats": "True",
+                "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDSource",
+                "rules": {
+                    "name": "name"
+                },
+                "subsections": {
+                    "laser": {
+                        "main_key": "vapor_source",
+                        "schema": "nomad_material_processing.vapor_deposition.pvd.pld.PLDLaser",
+                        "rules": {
+                            "laserPulseFrequency": {
+                                "source": "*.value",
+                                "target": "repetition_rate",
+                                "match_key": [{"propertyID": "laserPulseFrequency"}]
+                            },
+                            "laserPulseCount": {
+                                "source": "*.value",
+                                "target": "pulses",
+                                "match_key": [{"propertyID": "laserPulseCount"}]
+                            }
+                        },
+                        "subsections": {
+                            "power": {
+                                "main_key": "power",
+                                "schema": "nomad_material_processing.vapor_deposition.pvd.general.SourcePower",
+                                "rules": {
+                                    "set_value_rule":{
+                                        "source": "*.value",
+                                        "target": "set_value",
+                                        "target_type": "array",
+                                        "match_key": [{"propertyID": "heaterPower"}]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": {
+                "main_key": "sample_parameters",
+                "repeats": "True",
+                "schema": "nomad_material_processing.vapor_deposition.pvd.general.PVDSampleParameters",
+                "rules": {
+                    "substrateTargetDistance": {
+                        "source": "*.value",
+                        "target": "distance_to_source",
+                        "match_key": [{"propertyID": "substrateTargetDistance"}]
+                    }
+                },
+                "subsections": {
+                    "substrate_temperature": {
+                        "main_key": "substrate_temperature",
+                        "schema": "nomad_material_processing.vapor_deposition.general.Temperature",
+                        "rules": {
+                            "set_value_rule": {
+                                "source": "*.value",
+                                "target": "set_value",
+                                "target_type": "array",
+                                "match_key": [{"propertyID": "substrateTemperatureSetPoint"}]
+                            },
+                            "set_value_unit": {
+                                "source": "*.unit",
+                                "target": "tempunits.set_value",
+                                "match_key": [{"propertyID": "substrateTemperatureSetPoint"}]
+                            }
+                        }
+                    }
+                }
+            },
+            "environment": {
+                "main_key": "environment",
+                "schema": "nomad_material_processing.vapor_deposition.general.ChamberEnvironment",
+                "rules": {
+                    "name": "name"
+                },
+                "subsections": {
+                    "gas_flow": {
+                        "main_key": "gas_flow",
+                        "repeats": "True",
+                        "schema": "nomad_material_processing.vapor_deposition.general.GasFlow",
+                        "rules": {
+                            "name": "name"
+                        },
+                        "subsections": {
+                            "Gas": {
+                                "main_key": "gas",
+                                "schema": "nomad.datamodel.metainfo.basesections.v1.PureSubstanceSection",
+                                "rules": {
+                                    "gas": {
+                                        "source": "*.value",
+                                        "target": "name",
+                                        "match_key": [{"propertyID": "gas"}]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "pressure": {
+                        "main_key": "pressure",
+                        "schema":"nomad_material_processing.vapor_deposition.general.Pressure",
+                        "rules": {
+                            "set_value_rule": {
+                                "source": "*.value",
+                                "target": "set_value",
+                                "target_type": "array",
+                                "match_key": [{"propertyID": "pressureSetPoint"}]
+                            },
+                            "set_value_unit": {
+                                "source": "*.unit",
+                                "target": "tempunits.set_value",
+                                "match_key": [{"propertyID": "pressureSetPoint"}]
+                            }
+                        }
+                    }
+                }
+            }
+        }   
+    },
+    "chamber": {
+        "main_key": "chamber",
+        "is_archive": "True",
+        "schema": "nomad_pld_unileipzig.schema_packages.pld.UniLeipzigChamber",
+        "rules": {
+            "name": {
+                "source": "*.name",
+                "target": "name",
+                "match_key": [{"about.name": "PLD Chamber"}]
+            },
+            "hasPart[2].name": "name",
+            "hasPart[2].identifier": "elabftw_identifier",
+            "hasPart[2].variableMeasured[0].value.extra_fields.laser.value": "laser",
+            "hasPart[2].variableMeasured[0].value.extra_fields.heaterDevice.value": "heaterDevice",
+            "hasPart[2].variableMeasured[0].value.extra_fields.vacuumController.value": "vacuumController",
+            "hasPart[2].variableMeasured[0].value.extra_fields.laserSpotCalibrationFunction.value": "laserSpotCalibrationFunction",
+            "hasPart[2].hasPart[0].\"@id\"": "chamber_images"
+        }
+
+    }
+} 

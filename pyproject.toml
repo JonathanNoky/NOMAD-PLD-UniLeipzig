@@ -26,6 +26,7 @@ maintainers = [
 license = { file = "LICENSE" }
 dependencies = [
     "nomad-lab>=1.4.0",
+    "nomad-json-parser"
     
 ]
 
@@ -129,7 +130,8 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [project.entry-points.'nomad.plugin']
-unileipzig_pld_parser = "nomad_pld_unileipzig.parsers:unileipzig_pld_parser"
+ro_crate_parser_pld = "nomad_pld_unileipzig.parsers:ro_crate_parser_pld"
+#unileipzig_pld_parser = "nomad_pld_unileipzig.parsers:unileipzig_pld_parser"
 uni_leipzig_pld_schema = "nomad_pld_unileipzig.schema_packages:uni_leipzig_pld_schema"
 #normalizer_entry_point = "nomad_pld_unileipzig.normalizers:normalizer_entry_point"
 #app_entry_point = "nomad_pld_unileipzig.apps:app_entry_point"

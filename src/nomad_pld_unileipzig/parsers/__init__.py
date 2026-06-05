@@ -1,15 +1,11 @@
-from nomad.config.models.plugins import ParserEntryPoint
+from nomad_json_parser.parsers import ROCrateParserEntryPoint
 
 
-class UniLeipzigPLDEntryPoint(ParserEntryPoint):
-    def load(self):
-        from nomad_pld_unileipzig.parsers.parser import UniLeipzigPLDParser
-
-        return UniLeipzigPLDParser(**self.dict())
-
-
-unileipzig_pld_parser = UniLeipzigPLDEntryPoint(
-    name='JsonParser for Uni Leipzig ELN PLD files',
-    description="""Parser for Uni Leipzig ELN PLD files.""",
+ro_crate_parser_pld = ROCrateParserEntryPoint(
+    name='JsonParser for ROCrate files.',
+    description="""Parser for ROCrate files.""",
+    level=1,
     mainfile_name_re=r'.*ro-crate-metadata.json$',
+    mainfile_contents_re=r'.*#category-PLD Process.*',
+    json_matching_key="pld_leipzig_jsonld",
 )
