@@ -10,25 +10,25 @@
                 "match_key": [{"about.name": "PLD Process"}]
             },
             "pdf_file": {
-                "source": "*.*.\"@id\"",
+                "source": "*.*.id",
                 "target": "pdf_file",
                 "match_key": [{"about.name": "PLD Process"}],
                 "match_key1": [{"name": ".*pdf"}]
             },
             "jpg_file": {
-                "source": "*.*.\"@id\"",
+                "source": "*.*.id",
                 "target": "jpg_file",
                 "match_key": [{"about.name": "PLD Process"}],
                 "match_key1": [{"name": ".*jpg"}]
             },
             "protocol_file": {
-                "source": "*.*.\"@id\"",
+                "source": "*.*.id",
                 "target": "protocol_file",
                 "match_key": [{"about.name": "PLD Process"}],
                 "match_key1": [{"name": ".*ptk"}]
             },
             "abs_file": {
-                "source": "*.*.\"@id\"",
+                "source": "*.*.id",
                 "target": "abs_file",
                 "match_key": [{"about.name": "PLD Process"}],
                 "match_key1": [{"name": ".*abs"}]
@@ -233,7 +233,7 @@
             "hasPart[2].variableMeasured[0].value.extra_fields.heaterDevice.value": "heaterDevice",
             "hasPart[2].variableMeasured[0].value.extra_fields.vacuumController.value": "vacuumController",
             "hasPart[2].variableMeasured[0].value.extra_fields.laserSpotCalibrationFunction.value": "laserSpotCalibrationFunction",
-            "hasPart[2].hasPart[0].\"@id\"": "chamber_images"
+            "hasPart[2].hasPart[0].id": "chamber_images"
         }
 
     }
