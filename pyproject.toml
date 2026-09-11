@@ -131,11 +131,10 @@ where = ["src"]
 
 [project.entry-points.'nomad.plugin']
 ro_crate_parser_pld = "nomad_pld_unileipzig.parsers:ro_crate_parser_pld"
-#unileipzig_pld_parser = "nomad_pld_unileipzig.parsers:unileipzig_pld_parser"
 uni_leipzig_pld_schema = "nomad_pld_unileipzig.schema_packages:uni_leipzig_pld_schema"
 #normalizer_entry_point = "nomad_pld_unileipzig.normalizers:normalizer_entry_point"
 #app_entry_point = "nomad_pld_unileipzig.apps:app_entry_point"
-#example_upload_entry_point = "nomad_pld_unileipzig.example_uploads:example_upload_entry_point"
+example_upload_entry_point = "nomad_pld_unileipzig.example_uploads:example_upload_entry_point"
 
 [tool.cruft]
 # Avoid updating workflow files, this leads to permissions issues

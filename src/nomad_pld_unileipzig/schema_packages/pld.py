@@ -39,6 +39,10 @@ configuration = config.get_plugin_entry_point(
 
 m_package = SchemaPackage()
 
+# The following sections are BaseSections with expanded properties as 
+# neccessary for the PLD Experiment from the Uni Leipzig. They can be expanded
+# as neccessary.
+
 
 class UniLeipzigPLDStep(PLDStep):
     m_def = Section(
@@ -87,7 +91,9 @@ class UniLeipzigChamber(EntryData, ArchiveSection):
         super().normalize(archive, logger)
 
 
+
 class UniLeipzigPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
+    # The main PLD schema. Also contains functions to postprocess the data.
     m_def = Section(
         a_eln=ELNAnnotation(
             properties=SectionProperties(
@@ -280,7 +286,7 @@ class UniLeipzigPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryD
                 cleaned_data = [line[2:] for line in file.readlines()]
                 data = np.genfromtxt(cleaned_data, skip_header=3)
 
-            logger.warning(data)
+            # Read in the data from the protocol file into the NOMAD metadata sections.
 
             for i in set(data[:, 0]):
                 stepdata = data[data[:, 0] == i]
@@ -323,40 +329,10 @@ class UniLeipzigPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryD
                         ].vapor_source.power.time = stepdata[:, 12]
                         self.layer[j].duration = stepdata[:, 11][-1]
 
+            # Build the unified PLD plot.
+
             self.plot()
-            # # Now create the according plots
-            # import plotly.express as px
-            # from PIL import Image
-            # from plotly.subplots import make_subplots
 
-            # with archive.m_context.raw_file(self.jpg_file, 'rb') as file:
-            #     img = Image.open(file)
-            #     arr = np.array(img)
-            # fig = px.imshow(arr)
-            # fig.update_xaxes(visible=False)
-            # fig.update_yaxes(visible=False)
-            # self.figures.append(
-            #     PlotlyFigure(label='Figure', figure=fig.to_plotly_json())
-            # )
-
-            # figure1 = make_subplots(rows=1, cols=1, shared_xaxes=True)
-            # temperature = px.scatter(x=data[:, 12], y=data[:, 5])
-            # figure1.add_trace(temperature.data[0], row=1, col=1)
-            # figure1.update_layout(
-            #     height=400, width=716, title_text='Substrate temperature'
-            # )
-            # self.figures.append(
-            #     PlotlyFigure(
-            #         label='Substrate temperature', figure=figure1.to_plotly_json()
-            #     )
-            # )
-            # figure2 = make_subplots(rows=1, cols=1, shared_xaxes=True)
-            # pressure = px.scatter(x=data[:, 12], y=data[:, 1])
-            # figure2.add_trace(pressure.data[0], row=1, col=1)
-            # figure2.update_layout(height=400, width=716, title_text='Pressure')
-            # self.figures.append(
-            #     PlotlyFigure(label='Pressure', figure=figure2.to_plotly_json())
-            #)
         super().normalize(archive, logger)
 
 
