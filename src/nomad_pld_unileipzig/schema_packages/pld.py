@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     )
 
 import numpy as np
+import plotly.graph_objects as go
 from nomad.config import config
 from nomad.datamodel.data import (
     ArchiveSection,
@@ -31,7 +32,6 @@ from nomad_material_processing.vapor_deposition.pvd.pld import (
     PLDStep,
     PulsedLaserDeposition,
 )
-import plotly.graph_objects as go
 
 configuration = config.get_plugin_entry_point(
     'nomad_pld_unileipzig.schema_packages:uni_leipzig_pld_schema'
@@ -39,7 +39,7 @@ configuration = config.get_plugin_entry_point(
 
 m_package = SchemaPackage()
 
-# The following sections are BaseSections with expanded properties as 
+# The following sections are BaseSections with expanded properties as
 # neccessary for the PLD Experiment from the Uni Leipzig. They can be expanded
 # as neccessary.
 
@@ -89,7 +89,6 @@ class UniLeipzigChamber(EntryData, ArchiveSection):
 
     def normalize(self, archive: 'EntryArchive', logger: 'BoundLogger') -> None:
         super().normalize(archive, logger)
-
 
 
 class UniLeipzigPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryData):
@@ -152,7 +151,11 @@ class UniLeipzigPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryD
         y30 = None
         shapes = []
         for step in self.steps:
-            if not np.any(step.environment.pressure.time) or not np.any(step.environment.pressure.value) or not np.any(step.sources[0].vapor_source.power.value):
+            if (
+                not np.any(step.environment.pressure.time)
+                or not np.any(step.environment.pressure.value)
+                or not np.any(step.sources[0].vapor_source.power.value)
+            ):
                 continue
             x = step.environment.pressure.time.to('second').magnitude
             y = step.environment.pressure.value.to('mbar').magnitude
@@ -302,12 +305,12 @@ class UniLeipzigPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryD
                         self.steps[j].sample_parameters[
                             0
                         ].substrate_temperature.time = stepdata[:, 12]
-                        self.steps[j].sources[
-                            0
-                        ].vapor_source.power.value = stepdata[:, 3] * ureg('W')
-                        self.steps[j].sources[
-                            0
-                        ].vapor_source.power.time = stepdata[:, 12]
+                        self.steps[j].sources[0].vapor_source.power.value = stepdata[
+                            :, 3
+                        ] * ureg('W')
+                        self.steps[j].sources[0].vapor_source.power.time = stepdata[
+                            :, 12
+                        ]
                         self.steps[j].duration = stepdata[:, 11][-1]
                 for j in range(len(self.layer)):
                     if self.layer[j].stepnumber == i:
@@ -321,12 +324,12 @@ class UniLeipzigPulsedLaserDeposition(PulsedLaserDeposition, PlotSection, EntryD
                         self.layer[j].sample_parameters[
                             0
                         ].substrate_temperature.time = stepdata[:, 12]
-                        self.layer[j].sources[
-                            0
-                        ].vapor_source.power.value = stepdata[:, 3] * ureg('W')
-                        self.layer[j].sources[
-                            0
-                        ].vapor_source.power.time = stepdata[:, 12]
+                        self.layer[j].sources[0].vapor_source.power.value = stepdata[
+                            :, 3
+                        ] * ureg('W')
+                        self.layer[j].sources[0].vapor_source.power.time = stepdata[
+                            :, 12
+                        ]
                         self.layer[j].duration = stepdata[:, 11][-1]
 
             # Build the unified PLD plot.
